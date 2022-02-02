@@ -1,0 +1,20 @@
+name: "yolov4_post"
+backend: "python"
+
+input [
+  {
+    name: "detections"
+    data_type: TYPE_FP32
+    dims: [ 1, 10647, 84 ]
+  }
+]
+
+output [
+  { # [class_id, score, x_min, y_min, x_max, y_max]
+    name: "output"
+    data_type: TYPE_FP32
+    dims: [ -1, 6 ]
+  }
+]
+
+instance_group [{ kind: KIND_CPU }]

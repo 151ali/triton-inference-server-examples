@@ -1,0 +1,45 @@
+name: "yolov4_pipeline"
+platform: "ensemble"
+input [
+  {
+    name: "IMAGE"
+    data_type: TYPE_FP32
+    dims: [ 1, 3, 416, 416 ]
+  }
+]
+output [
+  {
+    name: "OUTPUT"
+    data_type: TYPE_FP32
+    dims: [ -1, 6 ]
+  }
+]
+
+ensemble_scheduling {
+	step [
+		{
+			model_name: "yolov4"
+			model_version: 1
+			input_map {
+        		key: "input"
+        		value: "IMAGE"
+      	}
+			output_map {
+				key: "output"
+				value: "yolov4_output"
+			}
+		},
+		{
+			model_name: "yolov4_post"
+			model_version: 1
+			input_map {
+				key: "detections"
+				value: "yolov4_output"
+      	}
+			output_map {
+				key: "output"
+				value: "OUTPUT"
+			}
+		}
+	]
+}
